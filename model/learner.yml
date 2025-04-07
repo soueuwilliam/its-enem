@@ -8,7 +8,7 @@ learner:
       example: "learner_001"
     answers:
       type: dict
-      description: "Learner's answers to 180 questions (key: question ID, value: A/B/C/D/E)"
+      description: "Learner's answers to questions (key: question ID, value: A/B/C/D/E)"
       example: { "1": "A", "2": "B", "3": "C" }
     performance:
       type: dict
@@ -24,27 +24,22 @@ learner:
                 type: int
                 description: "Number of questions answered for this topic"
                 min: 0
-              correct_questions:
-                type: int
-                description: "Number of correct answers for this topic"
-                min: 0
-              percent_correct:
+              percent_correct_easy_questions:
                 type: float
-                description: "Percentage of correct answers for this topic"
+                description: "Percentage of correct answers for easy questions in this topic"
                 range: [0.0, 100.0]
-              difficulty_breakdown:
-                type: dict
-                description: "Number of questions by difficulty level"
-                properties:
-                  easy:
-                    type: int
-                    min: 0
-                  medium:
-                    type: int
-                    min: 0
-                  hard:
-                    type: int
-                    min: 0
+              percent_correct_medium_questions:
+                type: float
+                description: "Percentage of correct answers for medium questions in this topic"
+                range: [0.0, 100.0]
+              percent_correct_hard_questions:
+                type: float
+                description: "Percentage of correct answers for hard questions in this topic"
+                range: [0.0, 100.0]
+              points:
+                type: int
+                description: "Total points earned for this topic"
+                min: 0
         areas:
           type: dict
           description: "Metrics for each top-level area (e.g., Biologia, Química, Física)"
@@ -55,15 +50,19 @@ learner:
                 type: int
                 description: "Number of questions answered in this area"
                 min: 0
-              correct_questions:
-                type: int
-                description: "Number of correct answers in this area"
-                min: 0
-              percent_correct:
+              percent_correct_easy_questions:
                 type: float
-                description: "Percentage of correct answers in this area"
+                description: "Percentage of correct answers for easy questions in this area"
+                range: [0.0, 100.0]
+              percent_correct_medium_questions:
+                type: float
+                description: "Percentage of correct answers for medium questions in this area"
+                range: [0.0, 100.0]
+              percent_correct_hard_questions:
+                type: float
+                description: "Percentage of correct answers for hard questions in this area"
                 range: [0.0, 100.0]
               points:
                 type: int
-                description: "Total points earned in this area (e.g., easy=1, medium=2, hard=3)"
+                description: "Total points earned in this area"
                 min: 0
