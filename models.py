@@ -103,10 +103,12 @@ class LearnerModel(BaseModel):
 class PedagogyModel:
     def __init__(self, pedagogy_file: str, threshold_topics: float = 50.0, threshold_areas: float = 50.0):
         with open(pedagogy_file, 'r') as f:
-            self.rules = yaml.safe_load(f).get('feedback_rules', [])
+            data = yaml.safe_load(f)
+            self.feedback_types = data.get('feedback_types', [])
+            self.rules = data.get('feedback_rules', [])
         self.threshold_topics = threshold_topics
         self.threshold_areas = threshold_areas
-
+        
     def apply_rules(self, learner: LearnerModel) -> Dict:
         """Apply pedagogical rules to evaluate learner performance."""
         feedback = {"topics": {}, "areas": {}}

@@ -76,26 +76,57 @@ class Controller:
         return self.pedagogy_model.apply_rules(learner)
 
     def generate_report(self, feedback_flags: Dict, learner_id: str) -> str:
-        """Generate a human-readable report based on feedback flags."""
-        report = f"Recommendation Report for {learner_id}\n\n"
-        report += "**Topics to Review:**\n"
-        for topic, flags in feedback_flags["topics"].items():
-            if flags["needs_review"]:
-                report += f"- {topic}: Performance below 50%. Consider reviewing this topic.\n"
-            if flags.get("needs_hint"):
-                report += f"  * Hint recommended for {topic}.\n"
-            if flags.get("needs_visualization"):
-                report += f"  * Visualization suggested for {topic}.\n"
-        if not any(flags["needs_review"] for flags in feedback_flags["topics"].values()):
-            report += "- No specific topics need review.\n"
+        """Generate a human-readable report based on feedback flags using messages from pedagogy.yml."""
+        # Build a lookup dictionary for feedback messages from pedagogy_model
+        feedback_messages = {ftype["name"]: ftype["message"] for ftype in self.pedagogy_model.feedback_types}
 
+        report = f"Recommendation Report for {learner_id}\n\n"
+
+        # Categorize topics and areas based on SDT feedback flags
+        strengths_topics = [topic for topic in feedback_flags["topics"] if feedback_flags["topics"][topic].get("feedback_competence", 0) == 1]
+        growth_topics = [topic for topic in feedback_flags["topics"] if feedback_flags["topics"][topic].get("feedback_autonomy", 0) == 1]
+        focus_topics = [topic for topic in feedback_flags["topics"] if feedback_flags["topics"][topic].get("feedback_relatedness", 0) == 1]
+
+        strengths_areas = [area for area in feedback_flags["areas"] if feedback_flags["areas"][area].get("feedback_competence", 0) == 1]
+        growth_areas = [area for area in feedback_flags["areas"] if feedback_flags["areas"][area].get("feedback_autonomy", 0) == 1]
+        focus_areas = [area for area in feedback_flags["areas"] if feedback_flags["areas"][area].get("feedback_relatedness", 0) == 1]
+
+        # Your Strengths
+        report += "**Your Strengths:**\n"
+        for topic in strengths_topics:
+            report += f"- {feedback_messages['competence'].format(item=topic)}\n"
+        for area in strengths_areas:
+            report += f"- {feedback_messages['competence'].format(item=area)}\n"
+        if not strengths_topics and not strengths_areas:
+            report += "- No specific strengths identified yet. Keep working!\n"
+
+        # Opportunities for Growth
+        report += "\n**Opportunities for Growth:**\n"
+        for topic in growth_topics:
+            report += f"- {feedback_messages['autonomy'].format(item=topic)}"
+            if feedback_flags["topics"][topic].get("feedback_review", 0) == 1:
+                report += f" {feedback_messages['review'].format(item=topic)}"
+            report += "\n"
+        for area in growth_areas:
+            report += f"- {feedback_messages['autonomy'].format(item=area)}\n"
+        if not growth_topics and not growth_areas:
+            report += "- No specific opportunities for growth at this time.\n"
+
+        # Areas to Focus On
         report += "\n**Areas to Focus On:**\n"
-        for area, flags in feedback_flags["areas"].items():
-            if flags["needs_focus"]:
-                report += f"- {area}: Overall performance below 50%. Dedicate more time to this area.\n"
-        if not any(flags["needs_focus"] for flags in feedback_flags["areas"].values()):
+        for topic in focus_topics:
+            report += f"- {feedback_messages['relatedness'].format(item=topic)}"
+            if feedback_flags["topics"][topic].get("feedback_urgent", 0) == 1:
+                report += f" {feedback_messages['urgent'].format(item=topic)}"
+            if feedback_flags["topics"][topic].get("feedback_review", 0) == 1:
+                report += f" {feedback_messages['review'].format(item=topic)}"
+            report += "\n"
+        for area in focus_areas:
+            report += f"- {feedback_messages['relatedness'].format(item=area)}\n"
+        if not focus_topics and not focus_areas:
             report += "- All areas are performing satisfactorily.\n"
-        return report
+
+        return report    
 
     def generate_learners(self, num_learners: int) -> List[LearnerModel]:
         """Generate a list of mock learners with random answers."""

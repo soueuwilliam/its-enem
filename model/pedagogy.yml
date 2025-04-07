@@ -1,4 +1,28 @@
+feedback_types:
+
+  - name: "autonomy"
+    description: "Encourages learners to take control of their learning by exploring topics independently or setting their own goals."
+    message: "You're making steady progress in {item}. Consider exploring it further on your own to deepen your understanding."
+
+  - name: "competence"
+    description: "Affirms the learner's ability to master the material, highlighting progress and strengths."
+    message: "You're showing great competence in {item}! Keep up the excellent work."
+
+  - name: "relatedness"
+    description: "Makes the learner feel connected and supported, normalizing struggles and suggesting collaboration."
+    message: "Many students find {item} challenging. You're not alone—let's tackle this together."
+
+  - name: "urgent"
+    description: "Indicates a need for immediate attention to foundational concepts due to struggles with easy questions."
+    message: "Urgent: You struggled with easy questions in {item}. Let's review the basics to build a stronger foundation."
+
+  - name: "review"
+    description: "Suggests revisiting the topic to strengthen understanding, especially for more challenging concepts."
+    message: "Consider reviewing {item}, especially the harder concepts, to improve your mastery."
+
+
 feedback_rules:
+
   - name: "Relatedness for low topic performance"
     condition:
       type: "less_than"
