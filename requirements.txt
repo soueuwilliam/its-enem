@@ -1,0 +1,5 @@
+matplotlib
+networkx==3.4.2
+pandas==2.2.3
+pydantic==2.11.2
+PyYAML==6.0.2
