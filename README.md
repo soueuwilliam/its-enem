@@ -1,14 +1,18 @@
-# ITS-ENEM: Template para Implementação de um Intelligent Tutoring System
+# ITS-ENEM
+
+**Bem-vindo(a)!** Este repositório é um trabalho em andamento utilizado para propósitos ilustrativos de como um Sistemas de Tutoria Inteligente (ITS) pode ser implementado na prática. 
+
+Mas por que ITS são relevantes?
+
+> O "Problema 2 Sigma", identificado por Benjamin Bloom (1984), demonstra que o tutoria individualizada pode elevar o desempenho estudantil em *até* dois desvios padrão sobre o ensino tradicional. Contudo, a tutoria individual é de difícil escalabilidade por restrições logísticas e econômicas. Sistemas Tutores Inteligentes (ITS) emergem como alternativa, usando IA para oferecer instrução personalizada e adaptativa, visando replicar a eficácia do tutor humano e democratizar o acesso à educação de qualidade em larga escala.
 
 
 ![ITS](examples/ITS.drawio.png)
+Representação de conhecimento em AIED: abordagens simbólicas e conexionistas, e arquitetura de Sistemas de Tutoria Inteligente (ITS).
 
+Este repositório tem objetivo de servir como template base para implementação do seu ITS. 
 
-**Bem-vindo(a)!** Este repositório é um trabalho em andamento utilizado para propósitos ilustrativos de como um ITS pode ser implementado na prática. 
-
-O repositório tem objetivo de servir como template base para implementação do seu ITS. 
-
-## Como criar meu próprio ITS?
+## 🛠️ Como criar meu próprio ITS?
 
 ### Etapa # 1 - Projete seus modelos.
 
