@@ -19,18 +19,28 @@ feedback_rules:
   # Topic-level rules
   - name: "Relatedness for low easy question performance in topic"
     condition:
-      type: "less_than"
-      left: "performance.topics[topic].percent_correct_easy_questions"
-      right: 60.0
+      type: "and"
+      conditions:
+        - type: "greater_than_or_equal"
+          left: "performance.topics[topic].total_questions"
+          right: 2 
+        - type: "less_than"
+          left: "performance.topics[topic].percent_correct_easy_questions"
+          right: 60.0
     action:
       feedback_relatedness[topic]: 1
     description: "Flags relatedness feedback if performance on easy questions in the topic is below 60%"
 
   - name: "Competence for high hard question performance in topic"
     condition:
-      type: "greater_than"
-      left: "performance.topics[topic].percent_correct_high_questions"
-      right: 70.0
+      type: "and"
+      conditions:
+        - type: "greater_than_or_equal"
+          left: "performance.topics[topic].total_questions"
+          right: 2 
+        - type: "greater_than"
+          left: "performance.topics[topic].percent_correct_high_questions"
+          right: 70.0
     action:
       feedback_competence[topic]: 1
     description: "Flags competence feedback if performance on hard questions in the topic exceeds 70%"
@@ -39,6 +49,9 @@ feedback_rules:
     condition:
       type: "and"
       conditions:
+        - type: "greater_than_or_equal"
+          left: "performance.topics[topic].total_questions"
+          right: 2
         - type: "greater_than_or_equal"
           left: "performance.topics[topic].percent_correct_medium_questions"
           right: 50.0
@@ -51,18 +64,28 @@ feedback_rules:
 
   - name: "Urgent focus due to very low easy question performance in topic"
     condition:
-      type: "less_than"
-      left: "performance.topics[topic].percent_correct_easy_questions"
-      right: 50.0
+      type: "and"
+      conditions:
+      - type: "greater_than_or_equal"
+        left: "performance.topics[topic].total_questions"
+        right: 2
+      - type: "less_than"
+        left: "performance.topics[topic].percent_correct_easy_questions"
+        right: 50.0
     action:
       feedback_urgent[topic]: 1
     description: "Flags urgent focus if performance on easy questions in the topic is below 50%"
 
   - name: "Review due to low hard question performance in topic"
     condition:
-      type: "less_than"
-      left: "performance.topics[topic].percent_correct_high_questions"
-      right: 70.0
+      type: "and"
+      conditions:
+      - type: "greater_than_or_equal"
+        left: "performance.topics[topic].total_questions"
+        right: 2
+      - type: "less_than"
+        left: "performance.topics[topic].percent_correct_high_questions"
+        right: 70.0
     action:
       feedback_review[topic]: 1
     description: "Flags review if performance on hard questions in the topic is below 70%"
@@ -70,18 +93,28 @@ feedback_rules:
   # Area-level rules
   - name: "Relatedness for low easy question performance in area"
     condition:
-      type: "less_than"
-      left: "performance.areas[area].percent_correct_easy_questions"
-      right: 60.0
+      type: "and"
+      conditions:
+      - type: "greater_than_or_equal"
+        left: "performance.areas[area].total_questions"
+        right: 2
+      - type: "less_than"
+        left: "performance.areas[area].percent_correct_easy_questions"
+        right: 60.0
     action:
       feedback_relatedness[area]: 1
     description: "Flags relatedness feedback if performance on easy questions in the area is below 60%"
 
   - name: "Competence for high hard question performance in area"
     condition:
-      type: "greater_than"
-      left: "performance.areas[area].percent_correct_high_questions"
-      right: 70.0
+      type: "and"
+      conditions:
+      - type: "greater_than_or_equal"
+        left: "performance.areas[area].total_questions"
+        right: 2
+      - type: "greater_than"
+        left: "performance.areas[area].percent_correct_high_questions"
+        right: 70.0
     action:
       feedback_competence[area]: 1
     description: "Flags competence feedback if performance on hard questions in the area exceeds 70%"
@@ -90,6 +123,9 @@ feedback_rules:
     condition:
       type: "and"
       conditions:
+        - type: "greater_than_or_equal"
+          left: "performance.areas[area].total_questions"
+          right: 2
         - type: "greater_than_or_equal"
           left: "performance.areas[area].percent_correct_medium_questions"
           right: 50.0
