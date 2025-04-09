@@ -32,7 +32,7 @@ learner:
                 type: float
                 description: "Percentage of correct answers for medium questions in this topic"
                 range: [0.0, 100.0]
-              percent_correct_hard_questions:
+              percent_correct_high_questions:
                 type: float
                 description: "Percentage of correct answers for hard questions in this topic"
                 range: [0.0, 100.0]
@@ -58,7 +58,7 @@ learner:
                 type: float
                 description: "Percentage of correct answers for medium questions in this area"
                 range: [0.0, 100.0]
-              percent_correct_hard_questions:
+              percent_correct_high_questions:
                 type: float
                 description: "Percentage of correct answers for hard questions in this area"
                 range: [0.0, 100.0]
