@@ -3,110 +3,27 @@ from typing import Dict, Optional, Union
 import yaml
 import networkx as nx
 import matplotlib.pyplot as plt
-
+import requests
 
 class DomainModel:
+
     def __init__(self, domain_file: str):
-        with open(domain_file, 'r') as f:
+        try:
+          with open(domain_file, 'r') as f:
             self.domain = yaml.safe_load(f)
-
-    def parse_enem_data(self, enem_file: str) -> list:
-        """
-        Converte dados do ENEM em formato JSONL para o formato usado pelo controller.
-        Suporta tanto arquivos locais quanto URLs.
-        
-        Args:
-            enem_file: Caminho local ou URL para o arquivo JSONL contendo os dados do ENEM
-            
-        Returns:
-            Uma lista de questões no formato esperado pelo controller
-        """
-        import json
-        
-        questions = []
-        
-        # Verificar se é uma URL ou arquivo local
-        if enem_file.startswith(('http://', 'https://')):
-            # É uma URL, usar requests para obter o conteúdo
-            import requests
-            try:
-                response = requests.get(enem_file)
-                response.raise_for_status()  # Lança exceção para erros HTTP
-                
-                # Processar linha por linha do conteúdo da resposta
-                for line in response.text.splitlines():
-                    if line.strip():  # Ignorar linhas vazias
-                        enem_question = json.loads(line)
-                        question = self._convert_enem_question(enem_question)
-                        questions.append(question)
-                    
-            except requests.exceptions.RequestException as e:
-                print(f"Erro ao acessar a URL: {e}")
-                return []
-        else:
-            # É um arquivo local
-            try:
-                with open(enem_file, 'r', encoding='utf-8') as f:
-                    for line in f:
-                        if line.strip():  # Ignorar linhas vazias
-                            enem_question = json.loads(line)
-                            question = self._convert_enem_question(enem_question)
-                            questions.append(question)
-            except FileNotFoundError:
-                print(f"Arquivo não encontrado: {enem_file}")
-                return []
-            except json.JSONDecodeError:
-                print(f"Erro ao decodificar JSON em: {enem_file}")
-                return []
-                
-        return questions
-
-    def _convert_enem_question(self, enem_question: dict) -> dict:
-        """
-        Converte uma questão individual do formato ENEM para o formato do controller.
-        
-        Args:
-            enem_question: Dicionário contendo uma questão no formato ENEM
-            
-        Returns:
-            Dicionário no formato esperado pelo controller
-        """
-        # Mapear os campos do ENEM para nosso formato
-        question = {
-            "id": enem_question["id"],
-            "correct": enem_question["label"],
-            "difficulty": enem_question["difficulty"],
-            "topics": {}
-        }
-        
-        # Adicionar a área principal (ex: Biologia, Física, Química)
-        area = enem_question["area"]
-        topics = enem_question.get("topico", [])
-        
-        # Se for uma string, converter para lista
-        if isinstance(topics, str):
-            topics = [topics]
-            
-        # Criar caminhos de tópicos no formato esperado
-        question["topics"][area] = []
-        for topic in topics:
-            # Adicionar cada tópico como um caminho
-            if isinstance(topic, list):
-                question["topics"][area].append(topic)
-            else:
-                question["topics"][area].append([topic])
-        
-        return question
-        
-    def validate_topic_path(self, area: str, path: list) -> bool:
-        """Validate if a topic path exists in the domain hierarchy."""
-        current = self.domain.get(area, {})
-        for part in path:
-            if isinstance(current, dict):
-                current = current.get(part, {})
-            else:
-                return False
-        return True
+        except:
+          url = domain_file
+          try:
+              response = requests.get(url)
+              response.raise_for_status()
+              yaml_data = yaml.safe_load(response.text)
+              self.domain = yaml_data
+          except requests.exceptions.RequestException as e:
+              print(f"Error fetching YAML from {url}: {e}")
+              self.domain = None
+          except yaml.YAMLError as e:
+              print(f"Error parsing YAML from {url}: {e}")
+              self.domain = None
 
     def print_domain(self, domain=None, indent=0):
         """Pretty print the domain hierarchy."""
@@ -120,13 +37,94 @@ class DomainModel:
                 for item in value:
                     print("  " * (indent + 1) + "- " + item)
 
-    def plot(self):
-        """Plot the domain hierarchy as a directed graph."""
+    def plot(self, area=None, topico=None, root='Ciências da Natureza', simulate_colors=False):
+        """Plot the domain hierarchy as a directed graph in a tree-like structure."""
         G = nx.DiGraph()
-        self._build_graph(G, self.domain)
-        pos = nx.spring_layout(G)
-        nx.draw(G, pos, with_labels=True, node_size=3000, node_color="skyblue", font_size=10, font_weight="bold")
-        plt.title("Domain Knowledge Graph")
+
+        # Build the graph
+        if area:
+            if topico:
+                self._build_graph(G, {area: {topico: self.domain[root][area][topico]}})
+            else:
+                self._build_graph(G, {area: self.domain[root][area]})
+        else:
+            self._build_graph(G, self.domain[root])
+
+        # Ensure the graph is acyclic
+        if not nx.is_directed_acyclic_graph(G):
+            raise ValueError("The graph contains cycles and cannot be plotted as a tree.")
+
+        # Compute levels (depth) and topological order
+        topo_order = list(nx.topological_sort(G))
+        levels = {}  # Depth of each node
+        for node in topo_order:
+            levels[node] = max([levels.get(pred, 0) + 1 for pred in G.predecessors(node)], default=0)
+
+        # Compute x-coordinates using a tree-like spacing strategy
+        pos = {}
+        x_positions = {}  # Track x-position for each node
+        level_widths = {}  # Track the number of nodes per level for spacing
+
+        # First pass: Assign initial x-positions based on order within each level
+        for node in topo_order:
+            level = levels[node]
+            if level not in level_widths:
+                level_widths[level] = 0
+            x_positions[node] = level_widths[level]
+            level_widths[level] += 1
+
+        # Second pass: Adjust x-positions to center children under parents
+        for node in reversed(topo_order):  # Bottom-up adjustment
+            children = list(G.successors(node))
+            if children:
+                avg_child_x = sum(x_positions[child] for child in children) / len(children)
+                x_positions[node] = avg_child_x
+            pos[node] = (x_positions[node], -levels[node])  # Shortened edges
+
+        # Normalize x-positions to avoid overlap
+        max_width = max(level_widths.values())
+        if max_width > 1:
+            for node in pos:
+                pos[node] = (pos[node][0] * 2.0 / (max_width - 1), pos[node][1])
+
+        # Determine node colors
+        if simulate_colors:
+            num_nodes = G.number_of_nodes()
+            colors = np.random.choice(
+                ['#DC143C', '#FFD700', '#2E8B57'],
+                size=num_nodes,
+                p=[0.3, 0.4, 0.3]  # 30% red, 40% yellow, 30% green
+            )
+            node_color = colors
+        else:
+            node_color = "skyblue"  # Default color
+
+        # Create a larger figure to accommodate the graph
+        plt.figure(figsize=(12, 8))  # Increase figure size (width, height)
+
+        # Draw nodes and edges
+        nx.draw_networkx_nodes(G, pos, node_size=5000, node_color=node_color)
+        nx.draw_networkx_edges(G, pos)
+
+        # Draw rotated labels manually using Matplotlib
+        for node, (x, y) in pos.items():
+            plt.text(x, y, str(node), fontsize=10, fontweight="bold", 
+                    ha='center', va='center', rotation=45)
+
+        plt.title("Domain Model" if area and topico else "")
+
+        # Adjust layout to prevent clipping
+        plt.tight_layout()
+
+        # Add extra padding to ensure labels aren't cut off
+        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+
+        # Remove the border box (spines) and ticks
+        ax = plt.gca()  # Get the current axes
+        ax.set_frame_on(False)  # Turn off the frame (border box)
+        ax.set_xticks([])  # Remove x-axis ticks
+        ax.set_yticks([])  # Remove y-axis ticks
+
         plt.show()
 
     def _build_graph(self, G, domain, parent=None):
@@ -149,6 +147,7 @@ class LearnerModel(BaseModel):
     performance: Optional[Dict[str, Dict]] = Field(None, description="Performance metrics")
 
     def print_performance(self):
+        # TODO improve this function
         """Pretty print the learner's performance metrics."""
         if not self.performance:
             print("No performance data available.")
@@ -189,14 +188,25 @@ class LearnerModel(BaseModel):
 
 
 class PedagogyModel:
+  
     def __init__(self, pedagogy_file: str, threshold_topics: float = 50.0, threshold_areas: float = 50.0):
-        with open(pedagogy_file, 'r') as f:
-            data = yaml.safe_load(f)
-            self.feedback_types = data.get('feedback_types', [])
-            self.rules = data.get('feedback_rules', [])
+        try:
+          with open(pedagogy_file, 'r') as f:
+            yaml_data = yaml.safe_load(f)
+        except:
+          url = pedagogy_file
+          response = requests.get(url, headers={
+              'Cache-Control': 'no-cache', # Or 'no-store'
+              'Pragma': 'no-cache'         # Optional, for wider compatibility
+          })
+          response.raise_for_status()
+          yaml_data = yaml.safe_load(response.text)
+
+        self.feedback_types = yaml_data.get('feedback_types', [])
+        self.rules = yaml_data.get('feedback_rules', [])
         self.threshold_topics = threshold_topics
         self.threshold_areas = threshold_areas
-        
+
     def apply_rules(self, learner: LearnerModel) -> Dict:
         """Apply pedagogical rules to evaluate learner performance."""
         feedback = {"topics": {}, "areas": {}}

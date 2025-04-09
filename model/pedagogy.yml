@@ -1,19 +1,19 @@
 feedback_types:
   - name: "autonomy"
     description: "Encourages learners to take control of their learning by exploring topics independently or setting their own goals."
-    message: "Você está progredindo bem em {item}. Que tal explorá-lo mais por conta própria para aprofundar seu entendimento?"
+    message: "🟡 Que tal explorar {item} mais por conta própria para aprofundar seu entendimento? 🤔"
   - name: "competence"
     description: "Affirms the learner's ability to master the material, highlighting progress and strengths."
-    message: "Você está demonstrando grande competência em {item}! Continue com esse ótimo trabalho."
+    message: "🟢 Você demonstrou ótima competência em {item}! Continue com esse ótimo trabalho. ⭐"
   - name: "relatedness"
     description: "Makes the learner feel connected and supported, normalizing struggles and suggesting collaboration."
-    message: "Muitos estudantes acham {item} desafiador. Você não está sozinho—vamos enfrentar isso juntos."
+    message: "🟡 Muitos estudantes acham {item} desafiador. Você não está sozinho e ano que vem você vai ser melhor. 🤗"
   - name: "urgent"
     description: "Indicates a need for immediate attention to foundational concepts due to struggles with easy questions."
-    message: "Urgente: Você teve dificuldade com questões fáceis em {item}. Vamos revisar os conceitos básicos para construir uma base mais sólida."
+    message: "🔴 Urgente: Você teve dificuldade com questões fáceis em {item}. Vamos revisar os conceitos básicos para construir uma base mais sólida. ❗"
   - name: "review"
     description: "Suggests revisiting the topic to strengthen understanding, especially for more challenging concepts."
-    message: "Considere revisar {item}, especialmente os conceitos mais difíceis, para melhorar seu domínio."
+    message: "🟡 Considere revisar {item} 🔄, especialmente os conceitos mais difíceis, para melhorar seu domínio. 📚"
 
 feedback_rules:
   # Topic-level rules
