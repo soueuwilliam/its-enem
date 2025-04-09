@@ -1,19 +1,19 @@
 feedback_types:
   - name: "autonomy"
     description: "Encourages learners to take control of their learning by exploring topics independently or setting their own goals."
-    message: "You're making steady progress in {item}. Consider exploring it further on your own to deepen your understanding."
+    message: "Você está progredindo bem em {item}. Que tal explorá-lo mais por conta própria para aprofundar seu entendimento?"
   - name: "competence"
     description: "Affirms the learner's ability to master the material, highlighting progress and strengths."
-    message: "You're showing great competence in {item}! Keep up the excellent work."
+    message: "Você está demonstrando grande competência em {item}! Continue com esse ótimo trabalho."
   - name: "relatedness"
     description: "Makes the learner feel connected and supported, normalizing struggles and suggesting collaboration."
-    message: "Many students find {item} challenging. You're not alone—let's tackle this together."
+    message: "Muitos estudantes acham {item} desafiador. Você não está sozinho—vamos enfrentar isso juntos."
   - name: "urgent"
     description: "Indicates a need for immediate attention to foundational concepts due to struggles with easy questions."
-    message: "Urgent: You struggled with easy questions in {item}. Let's review the basics to build a stronger foundation."
+    message: "Urgente: Você teve dificuldade com questões fáceis em {item}. Vamos revisar os conceitos básicos para construir uma base mais sólida."
   - name: "review"
     description: "Suggests revisiting the topic to strengthen understanding, especially for more challenging concepts."
-    message: "Consider reviewing {item}, especially the harder concepts, to improve your mastery."
+    message: "Considere revisar {item}, especialmente os conceitos mais difíceis, para melhorar seu domínio."
 
 feedback_rules:
   # Topic-level rules
@@ -85,7 +85,7 @@ feedback_rules:
         right: 2
       - type: "less_than"
         left: "performance.topics[topic].percent_correct_high_questions"
-        right: 70.0
+        right: 50.0
     action:
       feedback_review[topic]: 1
     description: "Flags review if performance on hard questions in the topic is below 70%"
