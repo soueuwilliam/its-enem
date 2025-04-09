@@ -8,7 +8,7 @@ Mas por que ITS são relevantes?
 
 ![ITS](examples/ITS.drawio.png)
 
-Representação de conhecimento em AIED: abordagens simbólicas e conexionistas, e arquitetura de Sistemas de Tutoria Inteligente (ITS).
+*Figura: Representação de conhecimento em AIED: abordagens simbólicas e conexionistas, e arquitetura de Sistemas de Tutoria Inteligente (ITS).*
 
 Este repositório tem objetivo de servir como template base para implementação do seu ITS. 
 
