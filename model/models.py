@@ -10,6 +10,94 @@ class DomainModel:
         with open(domain_file, 'r') as f:
             self.domain = yaml.safe_load(f)
 
+    def parse_enem_data(self, enem_file: str) -> list:
+        """
+        Converte dados do ENEM em formato JSONL para o formato usado pelo controller.
+        Suporta tanto arquivos locais quanto URLs.
+        
+        Args:
+            enem_file: Caminho local ou URL para o arquivo JSONL contendo os dados do ENEM
+            
+        Returns:
+            Uma lista de questões no formato esperado pelo controller
+        """
+        import json
+        
+        questions = []
+        
+        # Verificar se é uma URL ou arquivo local
+        if enem_file.startswith(('http://', 'https://')):
+            # É uma URL, usar requests para obter o conteúdo
+            import requests
+            try:
+                response = requests.get(enem_file)
+                response.raise_for_status()  # Lança exceção para erros HTTP
+                
+                # Processar linha por linha do conteúdo da resposta
+                for line in response.text.splitlines():
+                    if line.strip():  # Ignorar linhas vazias
+                        enem_question = json.loads(line)
+                        question = self._convert_enem_question(enem_question)
+                        questions.append(question)
+                    
+            except requests.exceptions.RequestException as e:
+                print(f"Erro ao acessar a URL: {e}")
+                return []
+        else:
+            # É um arquivo local
+            try:
+                with open(enem_file, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        if line.strip():  # Ignorar linhas vazias
+                            enem_question = json.loads(line)
+                            question = self._convert_enem_question(enem_question)
+                            questions.append(question)
+            except FileNotFoundError:
+                print(f"Arquivo não encontrado: {enem_file}")
+                return []
+            except json.JSONDecodeError:
+                print(f"Erro ao decodificar JSON em: {enem_file}")
+                return []
+                
+        return questions
+
+    def _convert_enem_question(self, enem_question: dict) -> dict:
+        """
+        Converte uma questão individual do formato ENEM para o formato do controller.
+        
+        Args:
+            enem_question: Dicionário contendo uma questão no formato ENEM
+            
+        Returns:
+            Dicionário no formato esperado pelo controller
+        """
+        # Mapear os campos do ENEM para nosso formato
+        question = {
+            "id": enem_question["id"],
+            "correct": enem_question["label"],
+            "difficulty": enem_question["difficulty"],
+            "topics": {}
+        }
+        
+        # Adicionar a área principal (ex: Biologia, Física, Química)
+        area = enem_question["area"]
+        topics = enem_question.get("topico", [])
+        
+        # Se for uma string, converter para lista
+        if isinstance(topics, str):
+            topics = [topics]
+            
+        # Criar caminhos de tópicos no formato esperado
+        question["topics"][area] = []
+        for topic in topics:
+            # Adicionar cada tópico como um caminho
+            if isinstance(topic, list):
+                question["topics"][area].append(topic)
+            else:
+                question["topics"][area].append([topic])
+        
+        return question
+        
     def validate_topic_path(self, area: str, path: list) -> bool:
         """Validate if a topic path exists in the domain hierarchy."""
         current = self.domain.get(area, {})

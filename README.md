@@ -55,4 +55,4 @@ O ITS-ENEM foi o caso de uso utilizado para construção desse template de ITS. 
 - **Saidas**: Receba um relatório pedagogicamente significativo com tópicos e áreas para focar nos seus estudos para futuros exames.
 
 ## 💬 Fórum de Discussões
-Entre em contato pelo [GitHub](https://github.com/adaj/its-enem/issues)! 😊
+Abra uma [issue](https://github.com/adaj/its-enem/issues)! 😊
