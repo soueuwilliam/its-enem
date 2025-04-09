@@ -1,6 +1,10 @@
-# ITS-ENEM: Template para Implementação de um Intelligent Tutor System para o ENEM
+# ITS-ENEM: Template para Implementação de um Intelligent Tutoring System
 
-**Bem-vindo(a)!** Este repositório é um trabalho em andamento (work in progress) utilizado para propósitos ilustrativos de como um ITS pode ser implementado para o ENEM. 
+
+![ITS](examples/ITS.drawio.png)
+
+
+**Bem-vindo(a)!** Este repositório é um trabalho em andamento utilizado para propósitos ilustrativos de como um ITS pode ser implementado na prática. 
 
 O repositório tem objetivo de servir como template base para implementação do seu ITS. 
 
@@ -32,7 +36,9 @@ Após a fase de design, você deve então implementar a lógica do controlador, 
 
 ## 📚 Exemplo de inspiração: Mais sobre o ITS-ENEM
 
-> Pitch: "ITS-ENEM fornece tutoria de estudos em tópicos e áreas das **Ciências da Natureza do ENEM** com dicas de estudo para fortalecer sua auto-determinação e confiança para o próximo exame! 🚀"
+O ITS-ENEM foi o caso de uso utilizado para construção desse template de ITS. A seguir, mais informações sobre o escopo do projeto:
+
+> Pitch: "Não conseguiu sua aprovação no SISU? Vai precisar fazer outro ENEM? ITS-ENEM fornece tutoria de estudos em tópicos e áreas das **Ciências da Natureza do ENEM** com dicas de estudo para fortalecer sua auto-determinação e confiança para o próximo exame! 🚀"
 
 ## ❓ Do Que Se Trata?
 - **📝 Dicas Inteligentes**: Baseado no seu gabarito do ano anterior, diz o que você precisa estudar (ex: "Revise Mitose!").
