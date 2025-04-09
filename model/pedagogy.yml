@@ -1,116 +1,101 @@
 feedback_types:
-
   - name: "autonomy"
     description: "Encourages learners to take control of their learning by exploring topics independently or setting their own goals."
     message: "You're making steady progress in {item}. Consider exploring it further on your own to deepen your understanding."
-
   - name: "competence"
     description: "Affirms the learner's ability to master the material, highlighting progress and strengths."
     message: "You're showing great competence in {item}! Keep up the excellent work."
-
   - name: "relatedness"
     description: "Makes the learner feel connected and supported, normalizing struggles and suggesting collaboration."
     message: "Many students find {item} challenging. You're not alone—let's tackle this together."
-
   - name: "urgent"
     description: "Indicates a need for immediate attention to foundational concepts due to struggles with easy questions."
     message: "Urgent: You struggled with easy questions in {item}. Let's review the basics to build a stronger foundation."
-
   - name: "review"
     description: "Suggests revisiting the topic to strengthen understanding, especially for more challenging concepts."
     message: "Consider reviewing {item}, especially the harder concepts, to improve your mastery."
 
-
 feedback_rules:
-
-  - name: "Relatedness for low topic performance"
+  # Topic-level rules
+  - name: "Relatedness for low easy question performance in topic"
     condition:
       type: "less_than"
-      left: "performance.topics[topic].percent_correct"
-      right: 50.0
+      left: "performance.topics[topic].percent_correct_easy_questions"
+      right: 60.0
     action:
       feedback_relatedness[topic]: 1
-    description: "Flags relatedness feedback if topic performance is below 50%"
+    description: "Flags relatedness feedback if performance on easy questions in the topic is below 60%"
 
-  - name: "Competence for high topic performance"
+  - name: "Competence for high hard question performance in topic"
     condition:
       type: "greater_than"
-      left: "performance.topics[topic].percent_correct"
-      right: 80.0
+      left: "performance.topics[topic].percent_correct_hard_questions"
+      right: 70.0
     action:
       feedback_competence[topic]: 1
-    description: "Flags competence feedback if topic performance exceeds 80%"
+    description: "Flags competence feedback if performance on hard questions in the topic exceeds 70%"
 
-  - name: "Autonomy for moderate topic performance"
+  - name: "Autonomy for moderate medium question performance in topic"
     condition:
       type: "and"
       conditions:
         - type: "greater_than_or_equal"
-          left: "performance.topics[topic].percent_correct"
+          left: "performance.topics[topic].percent_correct_medium_questions"
           right: 50.0
         - type: "less_than_or_equal"
-          left: "performance.topics[topic].percent_correct"
+          left: "performance.topics[topic].percent_correct_medium_questions"
           right: 80.0
     action:
       feedback_autonomy[topic]: 1
-    description: "Flags autonomy feedback if topic performance is between 50% and 80%"
+    description: "Flags autonomy feedback if performance on medium questions in the topic is between 50% and 80%"
 
-  - name: "Relatedness for low area performance"
+  - name: "Urgent focus due to very low easy question performance in topic"
     condition:
       type: "less_than"
-      left: "performance.areas[area].percent_correct"
+      left: "performance.topics[topic].percent_correct_easy_questions"
       right: 50.0
     action:
-      feedback_relatedness[area]: 1
-    description: "Flags relatedness feedback if area performance is below 50%"
+      feedback_urgent[topic]: 1
+    description: "Flags urgent focus if performance on easy questions in the topic is below 50%"
 
-  - name: "Competence for high area performance"
+  - name: "Review due to low hard question performance in topic"
+    condition:
+      type: "less_than"
+      left: "performance.topics[topic].percent_correct_hard_questions"
+      right: 70.0
+    action:
+      feedback_review[topic]: 1
+    description: "Flags review if performance on hard questions in the topic is below 70%"
+
+  # Area-level rules
+  - name: "Relatedness for low easy question performance in area"
+    condition:
+      type: "less_than"
+      left: "performance.areas[area].percent_correct_easy_questions"
+      right: 60.0
+    action:
+      feedback_relatedness[area]: 1
+    description: "Flags relatedness feedback if performance on easy questions in the area is below 60%"
+
+  - name: "Competence for high hard question performance in area"
     condition:
       type: "greater_than"
-      left: "performance.areas[area].percent_correct"
-      right: 80.0
+      left: "performance.areas[area].percent_correct_hard_questions"
+      right: 70.0
     action:
       feedback_competence[area]: 1
-    description: "Flags competence feedback if area performance exceeds 80%"
+    description: "Flags competence feedback if performance on hard questions in the area exceeds 70%"
 
-  - name: "Autonomy for moderate area performance"
+  - name: "Autonomy for moderate medium question performance in area"
     condition:
       type: "and"
       conditions:
         - type: "greater_than_or_equal"
-          left: "performance.areas[area].percent_correct"
+          left: "performance.areas[area].percent_correct_medium_questions"
           right: 50.0
         - type: "less_than_or_equal"
-          left: "performance.areas[area].percent_correct"
+          left: "performance.areas[area].percent_correct_medium_questions"
           right: 80.0
     action:
       feedback_autonomy[area]: 1
-    description: "Flags autonomy feedback if area performance is between 50% and 80%"
-
-  - name: "Urgent topic focus due to easy question failure"
-    condition:
-      type: "and"
-      conditions:
-        - type: "greater_than"
-          left: "performance.topics[topic].difficulty_breakdown.easy"
-          right: 0
-        - type: "less_than"
-          left: "performance.topics[topic].percent_correct"
-          right: 50.0
-    action:
-      feedback_urgent[topic]: 1
-    description: "Flags urgent focus if easy questions exist and topic performance is below 50%"
-
-  - name: "Review topic due to hard question weakness"
-    condition:
-      type: "and"
-      conditions:
-        - type: "greater_than"
-          left: "performance.topics[topic].difficulty_breakdown.hard"
-          right: 0
-        - type: "less_than"
-          left: "performance.topics[topic].percent_correct"
-          right: 70.0
-    action:
-      feedback_review[topic]: 1
-    description: "Flags review if hard questions exist and topic performance is below 70%"
+    description: "Flags autonomy feedback if performance on medium questions in the area is between 50% and 80%"
