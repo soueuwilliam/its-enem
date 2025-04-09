@@ -6,7 +6,7 @@ Mas por que ITS são relevantes?
 
 > O "Problema 2 Sigma", identificado por Benjamin Bloom (1984), demonstra que o tutoria individualizada pode elevar o desempenho estudantil em *até* dois desvios padrão sobre o ensino tradicional. Contudo, a tutoria individual é de difícil escalabilidade por restrições logísticas e econômicas. Sistemas Tutores Inteligentes (ITS) emergem como alternativa, usando IA para oferecer instrução personalizada e adaptativa, visando replicar a eficácia do tutor humano e democratizar o acesso à educação de qualidade em larga escala.
 
-![ITS](examples/ITS.drawio.png)
+![ITS](images/ITS.drawio.png)
 
 *Figura: Representação de conhecimento em AIED: abordagens simbólicas e conexionistas, e arquitetura de Sistemas de Tutoria Inteligente (ITS).*
 
