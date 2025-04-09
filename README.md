@@ -40,9 +40,11 @@ Após a fase de design, você deve então implementar a lógica do controlador, 
 
 ## 📚 Exemplo de inspiração: Mais sobre o ITS-ENEM
 
-O ITS-ENEM foi o caso de uso utilizado para construção desse template de ITS. A seguir, mais informações sobre o escopo do projeto:
-
 > Pitch: "Não conseguiu sua aprovação no SISU? Vai precisar fazer outro ENEM? ITS-ENEM fornece tutoria de estudos em tópicos e áreas das **Ciências da Natureza do ENEM** com dicas de estudo para fortalecer sua auto-determinação e confiança para o próximo exame! 🚀"
+
+
+O ITS-ENEM foi o caso de uso utilizado para construção desse template de ITS. Utilizei uma porção de dados das questões do ENEM disponiveis no [HuggingFace Datasets](https://huggingface.co/datasets/maritaca-ai/enem). Na versão disponível em `dados/`, adicionei mais campos a cada questão, como sua área de conhecimento especifica, seus respectivos topicos/subtopicos alvo e o seu nível de dificuldade estimado. Isso poderá nos ajudar a adaptar o feedback à diferentes condições do modelo pedagógico comparando com simplesmente saber a porcentagem geral de questões certas/erradas do aluno.
+
 
 ## ❓ Do Que Se Trata?
 - **📝 Dicas Inteligentes**: Baseado no seu gabarito do ano anterior, diz o que você precisa estudar (ex: "Revise Mitose!").
