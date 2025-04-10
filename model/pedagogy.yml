@@ -1,137 +1,126 @@
 feedback_types:
-  - name: "autonomy"
-    description: "Encourages learners to take control of their learning by exploring topics independently or setting their own goals."
-    message: "🟡 Que tal explorar {item} mais por conta própria para aprofundar seu entendimento? 🤔"
-  - name: "competence"
-    description: "Affirms the learner's ability to master the material, highlighting progress and strengths."
-    message: "🟢 Você demonstrou ótima competência em {item}! Continue com esse ótimo trabalho. ⭐"
-  - name: "relatedness"
-    description: "Makes the learner feel connected and supported, normalizing struggles and suggesting collaboration."
-    message: "🟡 Muitos estudantes acham {item} desafiador. Você não está sozinho e ano que vem você vai ser melhor. 🤗"
-  - name: "urgent"
-    description: "Indicates a need for immediate attention to foundational concepts due to struggles with easy questions."
-    message: "🔴 Urgente: Você teve dificuldade com questões fáceis em {item}. Vamos revisar os conceitos básicos para construir uma base mais sólida. ❗"
-  - name: "review"
-    description: "Suggests revisiting the topic to strengthen understanding, especially for more challenging concepts."
-    message: "🟡 Considere revisar {item} 🔄, especialmente os conceitos mais difíceis, para melhorar seu domínio. 📚"
+  - name: "reforco_positivo_acerto_rapido"
+    description: "Reforço positivo por acerto com tempo de resposta rápido."
+    message: "Muito bem! Você respondeu corretamente e com agilidade em {item}. Continue assim."
+
+  - name: "reforco_negativo_erro"
+    description: "Reforço negativo por erro, com sugestão de correção."
+    message: "Você errou em {item}. É importante revisar esse conteúdo para melhorar seu desempenho."
+
+  - name: "reforco_negativo_tempo_alto"
+    description: "Reforço negativo por acerto com tempo de resposta alto."
+    message: "Você acertou a questão sobre {item}, mas levou muito tempo. É importante ganhar mais agilidade nesse tema."
+
+  - name: "reforco_positivo_melhoria"
+    description: "Reforço positivo por melhoria no desempenho."
+    message: "Parabéns! Seu desempenho em {item} está melhorando. Continue praticando para manter esse progresso."
+
+  - name: "revisao_sugerida"
+    description: "Sugestão direta de revisão após erros frequentes."
+    message: "Recomenda-se revisar o conteúdo de {item} para reforçar o aprendizado e evitar novos erros."
 
 feedback_rules:
-  # Topic-level rules
-  - name: "Relatedness for low easy question performance in topic"
+
+  - name: "erro_frequente_topico"
     condition:
       type: "and"
       conditions:
         - type: "greater_than_or_equal"
           left: "performance.topics[topic].total_questions"
-          right: 2 
+          right: 3
         - type: "less_than"
-          left: "performance.topics[topic].percent_correct_easy_questions"
-          right: 60.0
+          left: "performance.topics[topic].percent_correct"
+          right: 50.0
     action:
-      feedback_relatedness[topic]: 1
-    description: "Flags relatedness feedback if performance on easy questions in the topic is below 60%"
+      feedback_reforco_negativo_erro[topic]: 1
+    description: "Erro frequente em um tópico. Aciona reforço negativo e sugestão de revisão."
 
-  - name: "Competence for high hard question performance in topic"
-    condition:
-      type: "and"
-      conditions:
-        - type: "greater_than_or_equal"
-          left: "performance.topics[topic].total_questions"
-          right: 2 
-        - type: "greater_than"
-          left: "performance.topics[topic].percent_correct_high_questions"
-          right: 70.0
-    action:
-      feedback_competence[topic]: 1
-    description: "Flags competence feedback if performance on hard questions in the topic exceeds 70%"
-
-  - name: "Autonomy for moderate medium question performance in topic"
+  - name: "acerto_lento_topico"
     condition:
       type: "and"
       conditions:
         - type: "greater_than_or_equal"
           left: "performance.topics[topic].total_questions"
           right: 2
+        - type: "greater_than"
+          left: "performance.topics[topic].avg_response_time"
+          right: 45.0
+        - type: "greater_than"
+          left: "performance.topics[topic].percent_correct"
+          right: 60.0
+    action:
+      feedback_reforco_negativo_tempo_alto[topic]: 1
+    description: "Acertos com tempo alto no tópico. Aciona reforço negativo para melhorar tempo de resposta."
+
+  - name: "acerto_rapido_topico"
+    condition:
+      type: "and"
+      conditions:
         - type: "greater_than_or_equal"
-          left: "performance.topics[topic].percent_correct_medium_questions"
-          right: 50.0
-        - type: "less_than_or_equal"
-          left: "performance.topics[topic].percent_correct_medium_questions"
+          left: "performance.topics[topic].total_questions"
+          right: 2
+        - type: "less_than"
+          left: "performance.topics[topic].avg_response_time"
+          right: 30.0
+        - type: "greater_than"
+          left: "performance.topics[topic].percent_correct"
           right: 80.0
     action:
-      feedback_autonomy[topic]: 1
-    description: "Flags autonomy feedback if performance on medium questions in the topic is between 50% and 80%"
+      feedback_reforco_positivo_acerto_rapido[topic]: 1
+    description: "Acertos rápidos e frequentes no tópico. Aciona reforço positivo."
 
-  - name: "Urgent focus due to very low easy question performance in topic"
+  - name: "melhoria_topico"
     condition:
       type: "and"
       conditions:
-      - type: "greater_than_or_equal"
-        left: "performance.topics[topic].total_questions"
-        right: 2
-      - type: "less_than"
-        left: "performance.topics[topic].percent_correct_easy_questions"
-        right: 50.0
+        - type: "greater_than"
+          left: "performance.topics[topic].percent_correct"
+          right: "performance.topics[topic].previous_percent_correct"
     action:
-      feedback_urgent[topic]: 1
-    description: "Flags urgent focus if performance on easy questions in the topic is below 50%"
+      feedback_reforco_positivo_melhoria[topic]: 1
+    description: "Melhoria no desempenho do tópico. Aciona reforço positivo."
 
-  - name: "Review due to low hard question performance in topic"
+  - name: "erro_frequente_area"
     condition:
       type: "and"
       conditions:
-      - type: "greater_than_or_equal"
-        left: "performance.topics[topic].total_questions"
-        right: 2
-      - type: "less_than"
-        left: "performance.topics[topic].percent_correct_high_questions"
-        right: 50.0
+        - type: "greater_than_or_equal"
+          left: "performance.areas[area].total_questions"
+          right: 3
+        - type: "less_than"
+          left: "performance.areas[area].percent_correct"
+          right: 50.0
     action:
-      feedback_review[topic]: 1
-    description: "Flags review if performance on hard questions in the topic is below 70%"
+      feedback_reforco_negativo_erro[area]: 1
+    description: "Erros frequentes em uma área. Aciona reforço negativo e sugestão de revisão."
 
-  # Area-level rules
-  - name: "Relatedness for low easy question performance in area"
-    condition:
-      type: "and"
-      conditions:
-      - type: "greater_than_or_equal"
-        left: "performance.areas[area].total_questions"
-        right: 2
-      - type: "less_than"
-        left: "performance.areas[area].percent_correct_easy_questions"
-        right: 60.0
-    action:
-      feedback_relatedness[area]: 1
-    description: "Flags relatedness feedback if performance on easy questions in the area is below 60%"
-
-  - name: "Competence for high hard question performance in area"
-    condition:
-      type: "and"
-      conditions:
-      - type: "greater_than_or_equal"
-        left: "performance.areas[area].total_questions"
-        right: 2
-      - type: "greater_than"
-        left: "performance.areas[area].percent_correct_high_questions"
-        right: 70.0
-    action:
-      feedback_competence[area]: 1
-    description: "Flags competence feedback if performance on hard questions in the area exceeds 70%"
-
-  - name: "Autonomy for moderate medium question performance in area"
+  - name: "acerto_rapido_area"
     condition:
       type: "and"
       conditions:
         - type: "greater_than_or_equal"
           left: "performance.areas[area].total_questions"
           right: 2
-        - type: "greater_than_or_equal"
-          left: "performance.areas[area].percent_correct_medium_questions"
-          right: 50.0
-        - type: "less_than_or_equal"
-          left: "performance.areas[area].percent_correct_medium_questions"
+        - type: "less_than"
+          left: "performance.areas[area].avg_response_time"
+          right: 30.0
+        - type: "greater_than"
+          left: "performance.areas[area].percent_correct"
           right: 80.0
     action:
-      feedback_autonomy[area]: 1
-    description: "Flags autonomy feedback if performance on medium questions in the area is between 50% and 80%"
+      feedback_reforco_positivo_acerto_rapido[area]: 1
+    description: "Alto desempenho com tempo de resposta rápido em uma área. Aciona reforço positivo."
+
+  - name: "acerto_lento_area"
+    condition:
+      type: "and"
+      conditions:
+        - type: "greater_than_or_equal"
+          left: "performance.areas[area].total_questions"
+          right: 2
+        - type: "greater_than"
+          left: "performance.areas[area].avg_response_time"
+          right: 45.0
+    action:
+      feedback_reforco_negativo_tempo_alto[area]: 1
+    description: "Acertos com lentidão em uma área. Aciona reforço negativo com foco em agilidade."

@@ -1,68 +1,120 @@
 learner:
-  description: "Schema for a single learner’s profile and performance data"
+  description: "Schema para o perfil e desempenho de um aluno, com suporte a feedback behaviorista"
   type: dict
   properties:
     id:
       type: string
-      description: "Unique identifier for the learner (e.g., UUID or incremental ID)"
+      description: "ID único do aluno"
       example: "learner_001"
+
     answers:
       type: dict
-      description: "Learner's answers to questions (key: question ID, value: A/B/C/D/E)"
+      description: "Respostas do aluno (chave: ID da questão, valor: alternativa escolhida)"
       example: { "1": "A", "2": "B", "3": "C" }
+
+    response_times:
+      type: dict
+      description: "Tempo de resposta por questão (segundos)"
+      example: { "1": 28.5, "2": 45.0, "3": 15.2 }
+
+    feedback_log:
+      type: list
+      description: "Histórico de feedbacks behavioristas aplicados ao aluno"
+      items:
+        type: dict
+        properties:
+          question_id:
+            type: string
+            description: "ID da questão relacionada ao feedback"
+          feedback_type:
+            type: string
+            description: "Tipo de feedback aplicado (ex: reforço_positivo_acerto_rapido)"
+          message:
+            type: string
+            description: "Mensagem enviada ao aluno"
+          timestamp:
+            type: string
+            description: "Data/hora em que o feedback foi gerado"
+
     performance:
       type: dict
-      description: "Performance metrics per topic and area"
+      description: "Desempenho por tópico e área"
       properties:
         topics:
           type: dict
-          description: "Metrics for each leaf topic from domain.yml"
+          description: "Dados de desempenho por tópico"
           value:
             type: dict
             properties:
               total_questions:
                 type: int
-                description: "Number of questions answered for this topic"
                 min: 0
               percent_correct_easy_questions:
                 type: float
-                description: "Percentage of correct answers for easy questions in this topic"
                 range: [0.0, 100.0]
               percent_correct_medium_questions:
                 type: float
-                description: "Percentage of correct answers for medium questions in this topic"
                 range: [0.0, 100.0]
-              percent_correct_high_questions:
+              percent_correct_hard_questions:
                 type: float
-                description: "Percentage of correct answers for hard questions in this topic"
                 range: [0.0, 100.0]
+              avg_response_time:
+                type: float
+                description: "Tempo médio de resposta no tópico"
               points:
                 type: int
-                description: "Total points earned for this topic"
                 min: 0
+              previous_percent_correct:
+                type: float
+                description: "% de acertos anterior (para comparação de progresso)"
+                range: [0.0, 100.0]
+
         areas:
           type: dict
-          description: "Metrics for each top-level area (e.g., Biologia, Química, Física)"
+          description: "Dados agregados por área do conhecimento"
           value:
             type: dict
             properties:
               total_questions:
                 type: int
-                description: "Number of questions answered in this area"
                 min: 0
               percent_correct_easy_questions:
                 type: float
-                description: "Percentage of correct answers for easy questions in this area"
                 range: [0.0, 100.0]
               percent_correct_medium_questions:
                 type: float
-                description: "Percentage of correct answers for medium questions in this area"
                 range: [0.0, 100.0]
-              percent_correct_high_questions:
+              percent_correct_hard_questions:
                 type: float
-                description: "Percentage of correct answers for hard questions in this area"
                 range: [0.0, 100.0]
+              avg_response_time:
+                type: float
+                description: "Tempo médio de resposta na área"
               points:
                 type: int
-                description: "Total points earned in this area"
                 min: 0
+              previous_percent_correct:
+                type: float
+                description: "% de acertos anterior"
+                range: [0.0, 100.0]
+
+    behavior_flags:
+      type: dict
+      description: "Indicadores de atenção para reforço (gerados por regras)"
+      properties:
+        needs_review:
+          type: list
+          description: "Lista de tópicos ou áreas com baixa performance"
+          items: { type: string }
+        improving_topics:
+          type: list
+          description: "Tópicos com melhora identificada"
+          items: { type: string }
+        too_slow:
+          type: list
+          description: "Tópicos com tempo médio de resposta alto"
+          items: { type: string }
+        performing_well:
+          type: list
+          description: "Tópicos/áreas com alta performance e velocidade"
+          items: { type: string }
