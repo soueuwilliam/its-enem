@@ -2,16 +2,7 @@
 
 Bem-vindo(a) à pasta **model**! 🌟 Este é o coração do seu Sistema Tutor Inteligente (ITS), onde você encontrará três arquivos YAML chave: `domain.yml`, `learner.yml` e `pedagogy.yml`. Esses arquivos trabalham juntos como uma equipe 🤝 para definir o que seu ITS ensina, como ele acompanha os alunos e como os ajuda a ter sucesso.
 
-## 🎯 Tarefa: Construa Seus Próprios ITS!
-
-
-### Como Fazer:
-1.  **Escolha um Tópico**: Selecione algo interessante, como culinária, astronomia ou design de jogos.
-2.  **Escreva o `domain.yml`**: Liste os tópicos principais e divida-os em subtópicos.
-3.  **Elabore o `learner.yml`**: Decida quais informações do aluno acompanhar.
-4.  **Crie o `pedagogy.yml`**: Adicione três regras para orientar seus alunos.
-
-### Projetando os modelos do ITS
+## 🎯 Tarefa: Projetando os modelos do ITS
 
 Etapa 1 - Pense sobre o escopo geral do problema: 
 
