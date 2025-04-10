@@ -6,7 +6,7 @@ Bem-vindo(a) à pasta **model**! 🌟 Este é o coração do seu Sistema Tutor I
 
 Etapa 1 - Delimite o problema: 
 
-- *Quem precisa de tutoria individualizada mas não tem?*
+- *Quem é a audiência do seu sistema de tutoria inteligente?*
 - *Que estratégias de tutoria poderiam entregar mais valor para esse caso?*
 
 Etapa 2 - Defina o design da solução para o problema: 
