@@ -1,32 +1,73 @@
-# 📚 `models/`: Projetando Seu Sistema Tutor Inteligente (ITS)
+---
 
-Bem-vindo(a) à pasta **model**! 🌟 Este é o coração do seu Sistema Tutor Inteligente (ITS), onde você encontrará três arquivos YAML chave: `domain.yml`, `learner.yml` e `pedagogy.yml`. Esses arquivos trabalham juntos como uma equipe 🤝 para definir o que seu ITS ensina, como ele acompanha os alunos e como os ajuda a ter sucesso.
+## ✅ Etapa 1 – Delimite o problema
 
-## 🎯 Tarefa: Projetando os modelos do ITS
+### **Qual o problema?**
 
-Etapa 1 - Delimite o problema: 
+Alunos em fase final de preparação para as Olimpíadas de História do Brasil enfrentam dificuldades em manter a regularidade no desempenho, em responder com agilidade e em identificar os conteúdos em que ainda têm lacunas. A ausência de feedback imediato e direcionado atrapalha o progresso, reduz a motivação e impede uma prática mais eficaz.
 
-- *Qual o problema?"* 
-- *Quem é a audiência do seu sistema de tutoria inteligente?*
-- *Que estratégias de tutoria poderiam entregar mais valor para esse caso?*
+---
 
-Etapa 2 - Defina o design da solução para o problema: 
+### **Quem é a audiência do seu sistema de tutoria inteligente?**
 
-- *Quais as entradas são necessárias para acionar a tutoria?*
-- *Quais as saídas esperadas da sua tutoria? Que tipos de feedack ("O que dizer?")*
-- *Quais regras de feedback ("Quando dizer?")*
+- Estudantes do Ensino Fundamental II e Ensino Médio
+- Participantes da fase final das Olimpíadas de História
+- Com nível intermediário a avançado de conteúdo histórico
+- Com necessidade de reforço prático e direcionamento personalizado
 
-> Nessa fase de **design e modelagem**, não se preocupe muito com *como o feedback será entregue*, isso será necessário subsequentemente na implementação do controller.
+---
 
-Etapa 3 - Construa os Modelos Iniciais do ITS
+### **Que estratégias de tutoria poderiam entregar mais valor para esse caso?**
 
-- **`domain.yml`**: O **domínio de conhecimento**, o que seu ITS ensina. Estrutura de tópicos que compõem o conhecimento necessário à tarefa.
-- **`pedagogy.yml`**: A **estratégia pedagógica**, como o sistema orienta e apoia os alunos.
-- **`learner.yml`**: As **variáveis do estado do aluno**, o que acompanhamos sobre cada estudante, incluindo todas as variáves necessárias nas regras definidas na estratégia pedagógica.
+- **Reforço positivo** para acertos rápidos (estímulo à repetição do comportamento desejado)
+- **Reforço negativo** para erros ou lentidão (correção e orientação de foco)
+- **Mensagens objetivas, sem abstrações**, para alinhar com a abordagem behaviorista
+- **Feedback imediato**, após cada grupo de questões, para condicionamento mais eficaz
+- **Priorização de tópicos com alto índice de erro ou lentidão** para revisão prática
 
-Etapa 4 - Próximos passos
+---
 
-Refine o `pedagogy.yml` e `learner.yml` com o intuito de aprimorar o valor pedagógico das mensagens do ITS para os alunos:
+## ✅ Etapa 2 – Defina o design da solução para o problema
 
-- **Refinar o `pedagogy.yml`**: Adicione novos tipos de feedback, refraseie as mensagens.
-- **Melhorar o `learner.yml`**: Adicione todas variáveis utilizadas no seu `pedagogy.yml` em seu `learner.yml`.
+### **Quais as entradas são necessárias para acionar a tutoria?**
+
+1. **Gabarito da questão (correta ou incorreta)**
+2. **Tempo de resposta por questão**
+3. **Tópico ou área da questão (ex: Brasil Império, Segunda Guerra, Cidadania etc.)**
+4. **Dificuldade da questão (fácil, média, difícil)**
+5. **Histórico de desempenho do aluno por tópico**
+
+---
+
+### **Quais as saídas esperadas da sua tutoria? Que tipos de feedback (o que dizer?)**
+
+- **Reforço positivo**:
+  - "Muito bem! Você respondeu corretamente e com agilidade em Brasil República. Continue assim."
+  - "Parabéns! Seu desempenho em Cultura e Sociedade está melhorando."
+
+- **Reforço negativo (por erro)**:
+  - "Você errou em Escravidão no Brasil. É importante revisar esse conteúdo."
+
+- **Reforço negativo (por lentidão)**:
+  - "Você acertou a questão sobre Cidadania, mas levou muito tempo. Tente responder com mais rapidez."
+
+- **Sugestão de revisão**:
+  - "Recomenda-se revisar o conteúdo de Era Vargas para reforçar o aprendizado."
+
+---
+
+### **Quais regras de feedback (quando dizer?)**
+
+As regras se baseiam em:
+
+- **Erro frequente em um tópico ou área** → Reforço negativo + sugestão de revisão
+- **Acerto com tempo alto** → Reforço negativo focado em tempo
+- **Acerto com tempo baixo e consistência** → Reforço positivo
+- **Melhora em desempenho comparado ao passado** → Reforço positivo por progresso
+- **Desempenho baixo em questões fáceis** → Sinal de atenção (possível urgência na base)
+
+Essas regras são aplicadas sempre que um grupo mínimo de questões for respondido (ex: 2 ou 3 no mesmo tema).
+
+---
+
+Se quiser, posso organizar isso em um documento ou diagrama visual pra apresentação. Quer que eu monte isso num modelo de relatório simples ou canvas?
